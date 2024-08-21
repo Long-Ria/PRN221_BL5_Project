@@ -1,0 +1,196 @@
+﻿@page
+@model OnlineMedicine.Pages.Carts.CheckOutInfoModel
+@{
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Information</title>
+    <style>
+
+
+        h2 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .container1 {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+                color: #004d40;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ced4da;
+                border-radius: 6px;
+                font-size: 16px;
+                color: #495057;
+            }
+
+                .form-group input:focus {
+                    border-color: #007bff;
+                    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+                }
+
+            .form-group .btn-submit {
+                background-color: #007bff;
+                border: none;
+                color: #ffffff;
+                padding: 10px 20px;
+                font-size: 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                width: 100%;
+            }
+
+                .form-group .btn-submit:hover {
+                    background-color: #0056b3;
+                }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+            table thead th {
+                background-color: #007bff;
+                color: black;
+                padding: 12px;
+                text-align: center;
+            }
+
+            table tbody td {
+                padding: 12px;
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+                table tbody td img {
+                    max-width: 80px;
+                    border-radius: 4px;
+                }
+
+            table tbody .text-right {
+                text-align: right;
+            }
+
+            table tbody .font-weight-semibold {
+                font-weight: 600;
+            }
+
+        .total-cell {
+            color: #e53935; /* Red color for the total */
+            font-weight: 700;
+        }
+
+        .media {
+            display: flex;
+            align-items: center;
+        }
+
+        .media-body {
+            margin-left: 10px;
+        }
+
+        .text-dark {
+            color: #333;
+            text-decoration: none;
+        }
+
+            .text-dark:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+    <h2>Customer Information</h2>
+
+    <div class="container1">
+        <form asp-controller="Cart" asp-action="CheckOutInfo">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="CustomerName">Customer Name:</label>
+                        <input type="text" id="CustomerName" name="name" value="@ViewBag.Account.Username" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Address">Address:</label>
+                        <input type="text" id="Address" name="address" value="@ViewBag.Account.Address" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="PhoneNumber">Phone Number:</label>
+                        <input type="text" id="PhoneNumber" name="phoneNumber" value="@ViewBag.Account.PhoneNumber" />
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Submit" class="btn-submit" />
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product Name & Details</th>
+                                <th class="text-right">Price</th>
+                                <th class="text-center">Quantity</th>
+                                <th class="text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var c in ViewBag.Cart)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="media align-items-center">
+                                            <img src="@c.Medicine.Image" alt="">
+                                            <div class="media-body">
+                                                <a href="/Medicine/Details/@c.MedicineId" class="text-dark">
+                                                    <span>@c.Medicine.Name</span>
+                                                </a>
+                                                <small>
+                                                    <span class="text-muted">Type:</span>
+                                                    <span class="text-capitalize">@c.Medicine.Type.Name</span> &nbsp;
+                                                    <span class="text-muted">Category: </span> @c.Medicine.Category.Name &nbsp;
+                                                    <span class="text-muted">From: </span> @c.Medicine.Country.Name
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right font-weight-semibold">$@decimal.Round(c.Medicine.Price, 2)</td>
+                                    <td class="text-center font-weight-semibold">@c.Quantity</td>
+                                    <td class="text-right font-weight-semibold total-cell">$@decimal.Round(c.Price,2)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

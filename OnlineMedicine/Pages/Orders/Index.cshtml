@@ -1,0 +1,99 @@
+﻿@page
+@model OnlineMedicine.Pages.Orders.IndexModel
+@{
+}
+@using OnlineMedicine.Models;
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    /* Style the form container */
+    form {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        max-width: 400px;
+        font-family: Arial, sans-serif;
+    }
+
+        /* Style the form headings */
+        form h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        /* Style input elements */
+        form input[type="date"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin: 5px 0 10px 0;
+            width: calc(50% - 12px); /* Adjust width for alignment */
+        }
+
+        /* Style the radio buttons */
+        form input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        /* Style the submit button */
+        form input[type="submit"] {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+            /* Add hover effect to the submit button */
+            form input[type="submit"]:hover {
+                background-color: #0056b3;
+            }
+</style>
+
+<hr />
+<h1>ORDERS HISTORY</h1>
+
+<!-- Move the form outside the table -->
+<form action="/Order/Search" method="get">
+    <h3>Date</h3>
+    From <input type="date" name="fromDate" value="@ViewBag.from" style="display:block" />
+    To <input type="date" name="toDate" value="@ViewBag.to" style="display:block" />
+
+    <br />
+    <input type="radio" name="sort" value="1" @(ViewBag.Sort == 1 ? "checked" : "") /> Descending
+    <input type="radio" name="sort" value="2" @(ViewBag.Sort == 2 ? "checked" : "") /> Ascending
+    <br />
+    <input type="submit" value="Filter" />
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Customer</th>
+            <th>Total money</th>
+            <th>Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>s
+        @foreach (Order item in ViewBag.Orders)
+        {
+            <tr>
+                <td>@item.CustomerName</td>
+                <td>@item.TotalMoney</td>
+                <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
+                <td><a href="/OrderDetails/Details?id=@item.Id">View details</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

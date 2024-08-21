@@ -1,0 +1,198 @@
+﻿@page
+@model OnlineMedicine.Pages.Carts.CheckOutModel
+@{
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        .container1 {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        h1, h2, h3 {
+            margin: 0;
+            padding: 10px 0;
+            color: #004d40;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #007bff;
+        }
+
+        h2 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            font-size: 1.5rem;
+            color: #007bff;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            padding: 5px 0;
+        }
+
+        .table-container {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        .total-row {
+            font-weight: bold;
+            color: #e53935; /* Red color for the total */
+            font-size: 1.2rem;
+        }
+
+        .footer {
+            font-style: italic;
+            margin-top: 20px;
+            text-align: center;
+            color: #007bff;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1rem;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+            }
+
+        .btn-download {
+            background-color: #28a745;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 20px auto;
+            display: block;
+            width: 200px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+            .btn-download:hover {
+                background-color: #218838;
+            }
+    </style>
+</head>
+<body>
+    <button class="btn-download" onclick="downloadBill()">Download Bill</button>
+
+    <div class="container1">
+        <h1>Invoice Details</h1>
+
+        <div>
+            <h3>Customer: @ViewBag.Order.CustomerName</h3>
+            <h3>Address: @ViewBag.Order.Address</h3>
+            <h3>Phone Number: @ViewBag.Order.PhoneNumber</h3>
+            <h3>Order Date: @ViewBag.Order.CreatedDate</h3>
+            <h3>Total Money: <span class="total-row">$@ViewBag.Order.TotalMoney</span></h3>
+        </div>
+
+        <div class="table-container">
+            <h2>Order Details</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order Detail ID</th>
+                        <th>Product ID</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var detail in ViewBag.OrderDetails)
+                    {
+                        <tr>
+                            <td>@detail.Id</td>
+                            <td>@detail.MedicineId</td>
+                            <td>@detail.Medicine.Name</td>
+                            <td>@detail.Quantity</td>
+                            <td>$@decimal.Round(detail.Price, 2)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <p class="footer">Thank you for choosing and using our services. We wish you good health!</p>
+    </div>
+
+    <!-- Include html2canvas library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        function downloadBill() {
+            html2canvas(document.querySelector(".container1"), { useCORS: true }).then(canvas => {
+                const imgData = canvas.toDataURL("image/png");
+                const link = document.createElement('a');
+                link.href = imgData;
+                link.download = 'receipt.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }).catch(error => {
+                console.error('Error generating the image:', error);
+            });
+        }
+    </script>
+</body>
+</html>

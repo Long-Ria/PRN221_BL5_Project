@@ -1,0 +1,274 @@
+﻿@page
+@model OnlineMedicine.Pages.Carts.DetailsModel
+@using OnlineMedicine.Models
+@{
+}
+<style>
+    .ui-w-40 {
+        width: 40px !important;
+        height: auto;
+    }
+
+    .card {
+        box-shadow: 0 1px 15px 1px rgba(52, 40, 104, .08);
+    }
+
+    .ui-product-color {
+        display: inline-block;
+        overflow: hidden;
+        margin: .144em;
+        width: .875rem;
+        height: .875rem;
+        border-radius: 10rem;
+        -webkit-box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset;
+        vertical-align: middle;
+    }
+
+    input[type="checkbox"] {
+        margin-top: 25%;
+        margin-left: 35%;
+        transform: scale(1.8); /* Điều chỉnh tỷ lệ kích thước theo ý muốn */
+    }
+
+        /* Khi checkbox được chọn */
+        input[type="checkbox"]:checked {
+            margin-top: 25%;
+            margin-left: 35%;
+            transform: scale(1.8); /* Điều chỉnh tỷ lệ kích thước theo ý muốn */
+        }
+
+</style>
+
+@{
+    List<Cart> list = ViewBag.list;
+}
+
+<div class="container px-3 my-5 clearfix">
+    <!-- Shopping cart table -->
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Shopping Cart</h2>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                @if (list != null && list.Count > 0)
+                {
+                    <table class="table table-bordered m-0">
+                        <thead>
+                            <tr>
+                                <th>Choose</th>
+                                <!-- Set columns width -->
+                                <th class="text-center py-3 px-4" style="min-width: 400px;">Product Name &amp; Details</th>
+                                <th class="text-right py-3 px-4" style="width: 100px;">Price</th>
+                                <th class="text-center py-3 px-4" style="width: 120px;">Quantity</th>
+                                <th class="text-right py-3 px-4" style="width: 100px;">Total</th>
+                                <th class="text-center align-middle py-3 px-0" style="width: 40px;">
+                                    <a href="#"
+                                       class="shop-tooltip float-none text-light" title="" data-original-title="Clear cart">
+                                        <i class="ino ion-md-trash"></i>
+                                    </a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var c in list)
+                            {
+
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="medicineId" value="@c.MedicineId" checked />
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="media align-items-center">
+                                            <img style="width: 80px;" src="@c.Medicine.Image"
+                                                 class="d-block ui-bordered mr-4" alt="">
+                                            <div class="media-body">
+                                                <a href="/Medicine/Details/@c.MedicineId" class="d-block text-dark"
+                                                   style="text-decoration:none;"><span style="color:blue; font-size: 19px">@c.Medicine.Name</span></a>
+                                                <small>
+                                                    <span class="text-muted">Type:</span>
+                                                    <span class="text-capitalize">@c.Medicine.Type.Name</span> &nbsp;
+                                                    <span class="text-muted">Category: </span> @c.Medicine.Category.Name &nbsp;
+                                                    <span class="text-muted">From: </span> @c.Medicine.Country.Name
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right font-weight-semibold align-middle p-4">$@decimal.Round(c.Medicine.Price, 2)</td>
+                                    <td class="align-middle p-4">
+                                        <form action="/Cart/UpdateQuantity" method="get" id="form-child">
+                                            <input type="hidden" value="@c.Medicine.Price" name="unitPrice">
+                                            <input type="hidden" value="@c.MedicineId" name="mediId">
+                                            <input type="number" class="form-control text-center quantityInput"
+                                                   value="@c.Quantity" min="1" max="@c.Medicine.Quantity" name="quantity"
+                                                   oninput="checkValue(this)" data-unit-price="@c.Medicine.Price">
+                                        </form>
+                                    </td>
+                                    <td class="text-right font-weight-semibold align-middle p-4">$@decimal.Round(c.Price,2)</td>
+                                    <td class="text-center align-middle px-0">
+                                        <a href="/Cart/DeleteOneItemInCart/@c.MedicineId" onclick="return confirm('Are you sure to remove this out of Cart?');"
+                                           class="shop-tooltip close float-none text-danger" title="" data-original-title="Remove">×</a>
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                }
+            </div>
+            <!-- / Shopping cart table -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center pb-4">
+                <div class="mt-4">
+                </div>
+                <div class="d-flex">
+                    <div class="text-right mt-4 mr-5">
+                    </div>
+                    <div class="text-right mt-4">
+                        <label class="text-muted font-weight-normal m-0"><span style="color:orangered;font-size:larger">Total price</span></label>
+                        @{
+                            decimal total = 0;
+                            if (list != null && list.Count > 0)
+                            {
+                                total = list.Sum(x => x.Price);
+                            }
+                        }
+                        <div class="text-large"><h2 id="totalValue">$@decimal.Round(total,2)</h2></div>
+                    </div>
+                </div>
+            </div>
+            <div class="float-right">
+                
+                <form action="/Cart/PaypalPayment" method="get">
+                    <input type="hidden" id="checkboxValues" name="listId" value="">
+                    <button onclick="prepareCheckboxValues()" type="submit" class="btn btn-lg btn-primary mt-2" id="getSelectedValues">Checkout</button>
+                </form>
+                <a asp-controller="Medicine" asp-action="Index" class="btn btn-lg btn-default md-btn-flat mt-2 mr-3">Back to shopping</a>
+            </div>
+
+        </div>
+    </div>
+
+    @if (list == null || list.Count == 0)
+    {
+        <h3>Your cart is empty now!</h3>
+    }
+</div>
+<script>
+    var quantityInputs = document.querySelectorAll('.quantityInput');
+    var myForms = document.querySelectorAll('form');
+
+    quantityInputs.forEach(function (input, index) {
+        input.addEventListener('input', function () {
+            checkValue(input);
+            myForms[index].submit();
+        });
+    });
+
+    function checkValue(input) {
+        var value = parseInt(input.value, 10);
+        if (isNaN(value)) {
+            input.value = input.min;
+        } else if (value < input.min) {
+            input.value = input.min;
+        } else if (value > input.max) {
+            input.value = input.max;
+        }
+    }
+</script>
+
+<script>
+    // Lưu trạng thái cuộn trang khi trang bị tải lại
+    window.addEventListener('beforeunload', function () {
+        sessionStorage.setItem('scrollPosition', window.scrollY);
+    });
+
+    // Khôi phục trạng thái cuộn sau khi trang tải lại
+    window.addEventListener('load', function () {
+        var scrollPosition = sessionStorage.getItem('scrollPosition');
+        if (scrollPosition) {
+            window.scrollTo(0, parseInt(scrollPosition));
+        }
+    });
+</script>
+
+
+<script>
+    var quantityInputs = document.querySelectorAll('.quantityInput');
+    var myForms = document.querySelectorAll('form');
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    var totalValue = document.getElementById('totalValue');
+
+    checkboxes.forEach(function (checkbox, index) {
+        checkbox.addEventListener('change', function () {
+            // Gọi hàm tính toán tổng giá trị
+            calculateTotal();
+        });
+    });
+
+    quantityInputs.forEach(function (input, index) {
+        input.addEventListener('input', function () {
+            checkValue(input);
+            // Gọi hàm tính toán tổng giá trị
+            calculateTotal();
+        });
+    });
+
+    function calculateTotal() {
+        var total = 0;
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                total += parseInt(quantityInputs[i].value, 10) * parseFloat(quantityInputs[i].getAttribute('data-unit-price'));
+            }
+        }
+        totalValue.textContent = '$' + total.toFixed(2);
+    }
+
+    function checkValue(input) {
+        var value = parseInt(input.value, 10);
+        if (isNaN(value)) {
+            input.value = input.min;
+        } else if (value < input.min) {
+            input.value = input.min;
+        } else if (value > input.max) {
+            input.value = input.max;
+        }
+    }
+</script>
+
+
+<script>
+    function prepareCheckboxValues() {
+        // Lấy tất cả các checkbox
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        var selectedValues = [];
+
+        // Duyệt qua từng checkbox để lấy giá trị của checkbox được tích
+        checkboxes.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                selectedValues.push(checkbox.value);
+            }
+        });
+
+        if (selectedValues.length === 0) {
+            alert('Vui lòng chọn ít nhất một checkbox trước khi submit.');
+            return false; // Ngăn chặn việc submit nếu không có checkbox nào được chọn
+        }
+
+        // Gán danh sách giá trị của checkbox vào trường input kiểu hidden
+        document.getElementById('checkboxValues').value = selectedValues.join('-');
+    }
+</script>
+
+
+
+
+
+
+
+
+
+

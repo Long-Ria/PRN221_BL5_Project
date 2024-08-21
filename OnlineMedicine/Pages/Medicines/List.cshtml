@@ -1,0 +1,146 @@
+﻿@page
+@model OnlineMedicine.Pages.Medicines.ListModel
+@{
+}
+@{
+    ViewData["Title"] = "Category";
+}
+
+<style>
+    /* Style the sorting form container */
+    #sortingForm {
+        margin: 20px 0;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        /* Style the form labels */
+        #sortingForm label {
+            margin-right: 5px;
+            font-weight: bold;
+        }
+
+        /* Style the form selects */
+        #sortingForm select {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* Style the form button */
+        #sortingForm button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            /* Add hover effect to the button */
+            #sortingForm button:hover {
+                background-color: #0056b3;
+            }
+</style>
+
+
+<h1>All Medicines</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+    <a href="/Medicine/ExportToExcel" class="btn btn-primary" onclick="confirmDownload(event)">Export to Excel</a>
+</p>
+
+<!-- Sorting Form -->
+<form id="sortingForm">
+    <label for="sortField">Sort by:</label>
+    <select id="sortField" name="sortField">
+        <option value="Name">Name</option>
+        <option value="ExpiredDate">Expired Date</option>
+    </select>
+
+    <label for="sortOrder">Order:</label>
+    <select id="sortOrder" name="sortOrder">
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
+    </select>
+
+    <button type="button" onclick="applySorting()">Sort</button>
+</form>
+
+@{
+    <table class="table" id="medicinesTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Image</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Country</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>ExpiredDate</th>
+                <th>MinAge</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- Your data rows go here -->
+        </tbody>
+    </table>
+}
+
+@section Scripts {
+    <script>
+        function confirmDownload(event) {
+            event.preventDefault(); // Prevent the default action of the anchor tag
+            var userConfirmed = confirm("Do you want to download the Excel file?");
+            if (userConfirmed) {
+                window.location.href = event.target.href; // Redirect to the URL if confirmed
+            }
+        }
+
+        function applySorting() {
+            const field = document.getElementById('sortField').value;
+            const order = document.getElementById('sortOrder').value;
+            sortTable(field, order);
+        }
+
+        function sortTable(field, order) {
+            const table = document.getElementById('medicinesTable').tBodies[0];
+            const rows = Array.from(table.rows);
+
+            rows.sort((a, b) => {
+                let valA, valB;
+
+                if (field === 'Name') {
+                    valA = a.cells[0].textContent.trim().toLowerCase();
+                    valB = b.cells[0].textContent.trim().toLowerCase();
+                } else if (field === 'ExpiredDate') {
+                    valA = new Date(a.cells[7].textContent.trim());
+                    valB = new Date(b.cells[7].textContent.trim());
+                }
+
+                if (order === 'asc') {
+                    return valA > valB ? 1 : valA < valB ? -1 : 0;
+                } else {
+                    return valA < valB ? 1 : valA > valB ? -1 : 0;
+                }
+            });
+
+            while (table.firstChild) {
+                table.removeChild(table.firstChild);
+            }
+
+            rows.forEach(row => table.appendChild(row));
+        }
+    </script>
+}

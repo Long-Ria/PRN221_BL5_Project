@@ -1,0 +1,50 @@
+﻿@page
+@model OnlineMedicine.Pages.Orders.OrderListModel
+@{
+}
+@using OnlineMedicine.Models;
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<hr />
+<h1>View Sale Order</h1>
+<table class="table">
+
+    <form action="/Order/Filter" method="post">
+        From <input type="date" name="fromDate" value="@ViewBag.from" />
+        To <input type="date" name="toDate" value="@ViewBag.to" />
+        <br /> <input type="radio" name="sort" value="1" @(ViewBag.Sort == 1 ? "checked" : "") /> Sort By Date Des
+        <input type="radio" name="sort" value="2" @(ViewBag.Sort == 2 ? "checked" : "") /> Sort By Date Asc
+        <br /> <input type="submit" value="Filter" />
+    </form>
+    <thead>
+        <tr>
+            <th>
+                Customer
+            </th>
+            <th>Total money</th>
+            <th>Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Order item in ViewBag.Orders)
+        {
+            <tr>
+                <td>
+                    @item.CustomerName
+                </td>
+                <td>
+                    @item.TotalMoney
+                </td>
+                <td>
+                    @item.CreatedDate.ToString("dd/MM/yyyy")
+                <td>
+                    <a href="/OrderDetails/DetailByAdmin?id=@item.Id">View details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

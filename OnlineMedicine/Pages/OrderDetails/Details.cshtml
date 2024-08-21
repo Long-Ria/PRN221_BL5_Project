@@ -1,0 +1,71 @@
+﻿@page
+@model OnlineMedicine.Pages.OrderDetails.DetailsModel
+@{
+}
+@using OnlineMedicine.Models;
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<hr />
+<h1>Order Details</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Medicine Image
+            </th>
+            <th>
+                Medicine Name
+            </th>
+            <th>
+                Medicine Category
+            </th>
+            <th>
+                Medicine Type
+            </th>
+            <th>
+                Medicine Price
+            </th>
+            <th>
+                Quantity
+            </th>
+            <th>
+                Total
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (OrderDetail item in ViewBag.OrderDetail)
+        {
+            <tr>
+                <td>
+                    <img style="height: 50px" src="@item.Medicine.Image">
+                </td>
+
+                <td>
+                    @item.Medicine.Name
+                </td>
+
+                <td>
+                    @item.Medicine.Category.Name
+                </td>
+
+                <td>
+                    @item.Medicine.Type.Name
+                </td>
+
+                <td>
+                    @item.Medicine.Price
+                </td>
+                <td>
+                    @item.Quantity
+                </td>
+                <td>
+                    @(item.Quantity * item.Medicine.Price)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

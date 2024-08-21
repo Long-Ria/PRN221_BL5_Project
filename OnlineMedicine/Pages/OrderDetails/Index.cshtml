@@ -1,0 +1,68 @@
+﻿@page
+@model OnlineMedicine.Pages.OrderDetails.IndexModel
+@{
+}
+@using OnlineMedicine.Models;
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<hr />
+<h1>View Sale OrderDetails</h1>
+<table class="table">
+
+    <form action="/OrderDetails/Filter" method="get">
+        From <input type="date" name="fromDate" value="@ViewBag.from" />
+        To <input type="date" name="toDate" value="@ViewBag.to" />
+        <br /> <input type="radio" name="sort" value="1" @(ViewBag.Sort == 1 ? "checked" : "") /> Sort By Date Des
+        <input type="radio" name="sort" value="2" @(ViewBag.Sort == 2 ? "checked" : "") /> Sort By Date Asc
+        <br /> <input type="submit" value="Filter" />
+    </form>
+    <thead>
+        <tr>
+            <th>
+                Medicine Image
+            </th>
+            <th>
+                Medicine Name
+            </th>
+            <th>
+                Customer Name
+            </th>
+            <th>
+                Date
+            </th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (OrderDetail item in ViewBag.ListO)
+        {
+            <tr>
+                <td>
+                    <img src="@item.Medicine.Image" height="40px">
+                </td>
+                <td>
+                    @item.Medicine.Name
+                </td>
+                <td>
+                    @item.Order.CustomerName
+                <td>
+                        @item.Order.CreatedDate.ToString("dd/MM/yyyy")
+                </td>
+                <td>
+                        @item.Medicine.Price
+                </td>
+                <td>
+                        @item.Quantity
+                </td>
+                <td>
+                        @(item.Quantity * item.Medicine.Price)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
