@@ -1,12 +1,13 @@
 ﻿@page
 @model OnlineMedicine.Pages.Medicines.DetailsModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @using OnlineMedicine.Models
 
 @{
     ViewBag.Title = "Details Page";
-    Medicine m = ViewBag.m;
-    List<Medicine> listM = ViewBag.listM;
+    Medicine m = Model.MedicineX;
+    List<Medicine> listM = Model.medicines;
 }
 <p>
     <a style="text-decoration:none" href="/Home">Home</a> /
@@ -42,7 +43,7 @@
             </form>
         </p>
         <div id="cartForm">
-            <form asp-controller="Cart" asp-action="AddToCart" method="post">
+            <form asp-page="/Carts/CheckOut" asp-page-handler="AddToCart" method="post">
                 <input type="hidden" name="medicineId" value="@m.Id" />
                 <input type="hidden" name="unitPrice" value="@m.Price" />
 
@@ -54,10 +55,10 @@
                 Choose <input name="quantity" style="width:200px;margin-left:50px" id="quantityInput" class="btn btn-primary" type="number" value="1" min="1" max="@m.Quantity" />
 
                 @{
-                    if (!User.Identity.IsAuthenticated)
+                    if (HttpContextAccessor.HttpContext.Session.GetString("User") == null)
                     {
                         <br />
-                        <a style="margin-top:3%;margin-left:10%" asp-controller="Account" asp-action="Login" class="btn btn-outline-primary" type="submit" disabled="@(m.Quantity == 0)">Add to Cart</a>
+                        <a style="margin-top:3%;margin-left:10%" asp-page="/Accounts/Login" class="btn btn-outline-primary"  disabled="@(m.Quantity == 0)">Add to Cart</a>
                     }
                     else
                     {
@@ -84,7 +85,7 @@
                     <h5 class="card-title" style="font-size: 1.125rem; font-weight: 500; text-align: center; overflow: hidden; text-overflow: ellipsis; height: 48px; color: #333;">
                         @i.Name
                     </h5>
-                    <a class="btn btn-primary" asp-action="Details" asp-route-id="@i.Id" style="background-color: #007bff; border-color: #007bff; color: #fff; text-decoration: none; padding: 0.5rem 1rem; border-radius: 0.25rem; display: inline-block; text-align: center; font-size: 1rem; font-weight: 400; margin-top: 10px; transition: background-color 0.3s ease;">
+                    <a class="btn btn-primary"  asp-route-id="@i.Id" style="background-color: #007bff; border-color: #007bff; color: #fff; text-decoration: none; padding: 0.5rem 1rem; border-radius: 0.25rem; display: inline-block; text-align: center; font-size: 1rem; font-weight: 400; margin-top: 10px; transition: background-color 0.3s ease;">
                         Details
                     </a>
                 </div>

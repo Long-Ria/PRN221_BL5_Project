@@ -187,7 +187,7 @@
                 <div class="card-body">
                     <h5 class="card-title" style="height:48px; text-align:center">@item.Name</h5>
                     <p class="card-text" style="max-height: 120px; overflow:hidden">@item.Descript</p>
-                    <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a class="btn btn-primary" asp-page="./Details/"  asp-route-id="@item.Id">Details</a>
                 </div>
             </div>
         }

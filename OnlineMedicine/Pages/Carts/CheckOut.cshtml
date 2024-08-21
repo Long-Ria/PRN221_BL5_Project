@@ -141,11 +141,11 @@
         <h1>Invoice Details</h1>
 
         <div>
-            <h3>Customer: @ViewBag.Order.CustomerName</h3>
-            <h3>Address: @ViewBag.Order.Address</h3>
-            <h3>Phone Number: @ViewBag.Order.PhoneNumber</h3>
-            <h3>Order Date: @ViewBag.Order.CreatedDate</h3>
-            <h3>Total Money: <span class="total-row">$@ViewBag.Order.TotalMoney</span></h3>
+            <h3>Customer: @Model.Order.CustomerName</h3>
+            <h3>Address: @Model.Order.Address</h3>
+            <h3>Phone Number: @Model.Order.PhoneNumber</h3>
+            <h3>Order Date: @Model.Order.CreatedDate</h3>
+            <h3>Total Money: <span class="total-row">$@Model.Order.TotalMoney</span></h3>
         </div>
 
         <div class="table-container">
@@ -161,7 +161,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var detail in ViewBag.OrderDetails)
+                    @foreach (var detail in Model.OrderDetails)
                     {
                         <tr>
                             <td>@detail.Id</td>

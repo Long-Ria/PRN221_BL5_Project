@@ -41,7 +41,7 @@
 </style>
 
 @{
-    List<Cart> list = ViewBag.list;
+    List<Cart> list = Model.listM;
 }
 
 <div class="container px-3 my-5 clearfix">
@@ -100,7 +100,7 @@
                                     </td>
                                     <td class="text-right font-weight-semibold align-middle p-4">$@decimal.Round(c.Medicine.Price, 2)</td>
                                     <td class="align-middle p-4">
-                                        <form action="/Cart/UpdateQuantity" method="get" id="form-child">
+                                        <form asp-page-handler="UpdateQuantity" method="get" id="form-child">
                                             <input type="hidden" value="@c.Medicine.Price" name="unitPrice">
                                             <input type="hidden" value="@c.MedicineId" name="mediId">
                                             <input type="number" class="form-control text-center quantityInput"
@@ -110,7 +110,7 @@
                                     </td>
                                     <td class="text-right font-weight-semibold align-middle p-4">$@decimal.Round(c.Price,2)</td>
                                     <td class="text-center align-middle px-0">
-                                        <a href="/Cart/DeleteOneItemInCart/@c.MedicineId" onclick="return confirm('Are you sure to remove this out of Cart?');"
+                                        <a asp-page-handler="DeleteOneItemInCart" asp-route-id="@c.MedicineId" onclick="return confirm('Are you sure to remove this out of Cart?');"
                                            class="shop-tooltip close float-none text-danger" title="" data-original-title="Remove">×</a>
                                     </td>
                                 </tr>
@@ -142,11 +142,11 @@
             </div>
             <div class="float-right">
                 
-                <form action="/Cart/PaypalPayment" method="get">
+                <form method="post" asp-page-handler="PaypalPayment">
                     <input type="hidden" id="checkboxValues" name="listId" value="">
                     <button onclick="prepareCheckboxValues()" type="submit" class="btn btn-lg btn-primary mt-2" id="getSelectedValues">Checkout</button>
                 </form>
-                <a asp-controller="Medicine" asp-action="Index" class="btn btn-lg btn-default md-btn-flat mt-2 mr-3">Back to shopping</a>
+                <a asp-page ="/Medicines/"  class="btn btn-lg btn-default md-btn-flat mt-2 mr-3">Back to shopping</a>
             </div>
 
         </div>

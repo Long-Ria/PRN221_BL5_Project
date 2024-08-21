@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using OnlineMedicine.Hubs;
 using OnlineMedicine.Models;
@@ -8,6 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
+
+builder.Services.AddHttpContextAccessor();
+
+
 builder.Services.AddDbContext<ProjectPRN211_HuongNT7_G6Context>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -33,5 +38,6 @@ app.UseSession();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
 app.MapHub<SignalrServer>("/signalrServer");
 app.Run();

@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@using OnlineMedicine.Models
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -32,49 +35,50 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a>
                         </li>
                     </ul>
-                    @{
-                        if (!User.Identity.IsAuthenticated)
-                        {
-                            <ul class="navbar-nav flex-grow-2">
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
-                                </li>
-                            </ul>
-                        }
-                        else
-                        {
-                            <ul class="navbar-nav flex-grow-2">
-                                @if (User.IsInRole("Admin"))
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Medicine" asp-action="ListAll">Manage Medicine</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="ListOrderByAdmin">View Orders</a>
-                                    </li>
-                                }
-                                else
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Details">
-                                            Cart <i class="fa fa-shopping-cart" style="color: #0074e4;"></i>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">Order</a>
-                                    </li>
-                                }
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Edit">Profile</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="LogOut">Logout</a>
-                                </li>
-                            </ul>
-                        }
+                    @if (HttpContextAccessor.HttpContext.Session.GetString("User") != null)
+                    {
+
+                        var userJson = HttpContextAccessor.HttpContext.Session.GetString("User");
+                        var user = System.Text.Json.JsonSerializer.Deserialize<Account>(userJson);
+                        <ul class="navbar-nav flex-grow-2">
+                            
+                            @if (user.RoleId == 1)
+                            {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Medicine/ListAll">Manage Medicine</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Order/ListOrderByAdmin">View Orders</a>
+                            </li>
+                            }
+                            @if (user.RoleId == 2)
+                            {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Carts/Details">
+                                    Cart <i class="fa fa-shopping-cart" style="color: #0074e4;"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Order/Index">Order</a>
+                            </li>
+                            }
+                            
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Accounts/Login" asp-page-handler="Logout">Logout</a>
+                            </li>
+                        </ul>
+
+                    }
+                    else
+                    {
+                        <ul class="navbar-nav flex-grow-2">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Accounts/Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Accounts/Register">Register</a>
+                            </li>
+                        </ul>
                     }
                 </div>
             </div>
