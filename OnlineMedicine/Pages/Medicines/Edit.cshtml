@@ -1,5 +1,5 @@
 ﻿@page
-@model OnlineMedicine.Models.Medicine
+@model OnlineMedicine.Pages.Medicines.EditModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -11,20 +11,20 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit" method="post" id="imageForm">
+        <form asp-page="Edit" method="post" id="imageForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
-                <input type="hidden" name="mid" value="@ViewBag.Medicine.Id" />
-                <label asp-for="Name" class="control-label"></label>
-                <input type="text" required name="name" value="@ViewBag.Medicine.Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <input type="hidden" name="mid" value="@Model.Medicine.Id" />
+                <label asp-for="@Model.Medicine.Name" class="control-label"></label>
+                <input type="text" required name="name" value="@Model.Medicine.Name" class="form-control" />
+                <span asp-validation-for="@Model.Medicine.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Category" class="control-label"></label>
+                <label asp-for="@Model.Medicine.Category" class="control-label"></label>
                 <select name="category" class="form-control">
-                    <option value="@ViewBag.Medicine.Category.Id">@ViewBag.Medicine.Category.Name</option>
-                    @foreach (var c in ViewBag.category)
+                    <option value="@Model.Medicine.Category.Id">@Model.Medicine.Category.Name</option>
+                    @foreach (Models.Category c in Model.Categories)
                     {
                         <option value="@c.Id">@c.Name</option>
                     }
@@ -32,44 +32,44 @@
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input name="price" required type="number" value="@ViewBag.Medicine.Price" class="form-control" />
-                <span asp-validation-for="ExpiredDate" class="text-danger"></span>
+                <label asp-for="@Model.Medicine.Price" class="control-label"></label>
+                <input name="price" required type="number" value="@Model.Medicine.Price" class="form-control" />
+                <span asp-validation-for="@Model.Medicine.ExpiredDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Quantity" required class="control-label"></label>
-                <input name="quantity" required type="number" value="@ViewBag.Medicine.Quantity" class="form-control" />
-                <span asp-validation-for="ExpiredDate" class="text-danger"></span>
+                <label asp-for="@Model.Medicine.Quantity" required class="control-label"></label>
+                <input name="quantity" required type="number" value="@Model.Medicine.Quantity" class="form-control" />
+                <span asp-validation-for="@Model.Medicine.ExpiredDate" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="ExpiredDate" class="control-label"></label>
-                <input name="expriedDate" required value="@ViewBag.date" type="date" class="form-control" />
-                <span asp-validation-for="ExpiredDate" class="text-danger"></span>
+                <label asp-for="@Model.Medicine.ExpiredDate" class="control-label"></label>
+                <input name="expriedDate" required value="@Model.Medicine.ExpiredDate" type="date" class="form-control" />
+                <span asp-validation-for="@Model.Medicine.ExpiredDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
+                <label asp-for="@Model.Medicine.Image" class="control-label"></label>
                 <a href="https://imgbb.com/" target="_blank">Get link of image</a>
                 <textarea name="image" class="form-control" id="imageUrl">
-                <img src="@ViewBag.Medicine.Image" alt="alt" />
+                <img src="@Model.Medicine.Image" alt="alt" />
                 </textarea>
-                <span asp-validation-for="Image" class="text-danger" id="error-message"></span>
+                <span asp-validation-for="@Model.Medicine.Image" class="text-danger" id="error-message"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Descript" class="control-label"></label>
-                <input type="text" required value="@ViewBag.Medicine.Descript" name="descript" class="form-control" />
-                <span asp-validation-for="Descript" class="text-danger"></span>
+                <label asp-for="@Model.Medicine.Descript" class="control-label"></label>
+                <input type="text" required value="@Model.Medicine.Descript" name="descript" class="form-control" />
+                <span asp-validation-for="@Model.Medicine.Descript" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MinAge" class="control-label"></label>
-                <input type="number" required name="minAge" value="@ViewBag.Medicine.MinAge" class="form-control" />
-                <span asp-validation-for="MinAge" class="text-danger"></span>
+                <label asp-for="@Model.Medicine.MinAge" class="control-label"></label>
+                <input type="number" required name="minAge" value="@Model.Medicine.MinAge" class="form-control" />
+                <span asp-validation-for="@Model.Medicine.MinAge" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Type" class="control-label"></label>
+                <label asp-for="@Model.Medicine.Type.Name" class="control-label"></label>
                 <select name="typeId" class="form-control">
-                    <option value="@ViewBag.Medicine.Type.Id">@ViewBag.Medicine.Type.Name</option>
-                    @foreach (var c in ViewBag.type)
+                    <option value="@Model.Medicine.Type.Id">@Model.Medicine.Type.Name</option>
+                    @foreach (Models.Type c in Model.Types)
                     {
                         <option value="@c.Id">@c.Name</option>
                     }
@@ -77,10 +77,10 @@
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="Country" class="control-label"></label>
+                <label asp-for="@Model.Medicine.Country.Name" class="control-label"></label>
                 <select name="country" class="form-control">
-                    <option value="@ViewBag.Medicine.Country.Id">@ViewBag.Medicine.Country.Name</option>
-                    @foreach (var c in ViewBag.country)
+                    <option value="@Model.Medicine.Country.Id">@Model.Medicine.Country.Name</option>
+                    @foreach (Models.Country c in Model.Countries)
                     {
                         <option value="@c.Id">@c.Name</option>
                     }
@@ -97,7 +97,7 @@
 </div>
 
 <div>
-    <a asp-action="ListAll">Back to List</a>
+    <a asp-page="List">Back to List</a>
 </div>
 
 @section Scripts {

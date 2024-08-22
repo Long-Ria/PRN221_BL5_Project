@@ -5,6 +5,7 @@
 @{
     ViewData["Title"] = "Category";
 }
+@using OnlineMedicine.Models
 
 <style>
     /* Style the sorting form container */
@@ -55,7 +56,7 @@
 <h1>All Medicines</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-page="/Medicines/Create">Create New</a>
     <a href="/Medicine/ExportToExcel" class="btn btn-primary" onclick="confirmDownload(event)">Export to Excel</a>
 </p>
 
@@ -93,7 +94,24 @@
             </tr>
         </thead>
         <tbody id="tableBody">
-            <!-- Your data rows go here -->
+            @foreach (Medicine m in Model.Medicines)
+            {
+                <tr>
+                    <td>@m.Name</td>
+                    <td><img style="height: 50px" src="@m.Image"></td>
+                    <td>@m.Category.Name</td>
+                    <td>@m.Type.Name                                         </td>
+                    <td>@m.Country.Name</td>
+                    <td>@m.Price</td>
+                    <td>@m.Quantity</td>
+                    <td>@m.ExpiredDate</td>
+                    <td>@m.MinAge</td>
+                    <td>
+                        <a href="/Medicines/Edit?mid=@m.Id">Edit</a>
+                        <a href="/Medicines/List?handler=Delete&mid=@m.Id">Delete</a>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 }

@@ -30,7 +30,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (Order item in ViewBag.Orders)
+        @foreach (Order item in Model.Orders)
         {
             <tr>
                 <td>
@@ -42,7 +42,7 @@
                 <td>
                     @item.CreatedDate.ToString("dd/MM/yyyy")
                 <td>
-                    <a href="/OrderDetails/DetailByAdmin?id=@item.Id">View details</a>
+                    <a href="/OrderDetails/Index?id=@item.Id">View details</a>
                 </td>
             </tr>
         }
