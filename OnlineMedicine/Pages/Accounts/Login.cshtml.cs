@@ -52,7 +52,7 @@ namespace OnlineMedicine.Pages.Accounts
                     {
                         return LocalRedirect(ReturnUrl);
                     }
-                    return RedirectToPage("/Index");
+                    return RedirectToPage("/Medicines/Index");
                 }
                 else
                 {
@@ -60,7 +60,7 @@ namespace OnlineMedicine.Pages.Accounts
                     return Page();
                 }
             }
-            return Page();
+            return RedirectToPage("/Medicines/Index");
 
         }
         public  IActionResult OnGetLogout()
@@ -69,7 +69,7 @@ namespace OnlineMedicine.Pages.Accounts
             HttpContext.Session.Remove("User");
 
             // Redirect to the home page
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Medicines/Index");
         }
     }
 }

@@ -64,14 +64,14 @@
 <h1>ORDERS HISTORY</h1>
 
 <!-- Move the form outside the table -->
-<form action="/Order/Search" method="get">
+<form asp-page="/Orders/Index" method="get">
     <h3>Date</h3>
-    From <input type="date" name="fromDate" value="@ViewBag.from" style="display:block" />
-    To <input type="date" name="toDate" value="@ViewBag.to" style="display:block" />
+    From <input type="date" name="fromDate" value="@Model.FromDate" style="display:block" />
+    To <input type="date" name="toDate" value="@Model.ToDate" style="display:block" />
 
     <br />
-    <input type="radio" name="sort" value="1" @(ViewBag.Sort == 1 ? "checked" : "") /> Descending
-    <input type="radio" name="sort" value="2" @(ViewBag.Sort == 2 ? "checked" : "") /> Ascending
+    <input type="radio" name="sort" value="1" @(Model.Sort == 1 ? "checked" : "") /> Descending
+    <input type="radio" name="sort" value="2" @(Model.Sort == 2 ? "checked" : "") /> Ascending
     <br />
     <input type="submit" value="Filter" />
 </form>
@@ -85,8 +85,8 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>s
-        @foreach (Order item in ViewBag.Orders)
+    <tbody>
+        @foreach (Order item in @Model.listO)
         {
             <tr>
                 <td>@item.CustomerName</td>

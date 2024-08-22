@@ -16,12 +16,8 @@ namespace OnlineMedicine.Pages.Carts
         public List<OrderDetail> OrderDetails { get; set; }
 
         private readonly ProjectPRN211_HuongNT7_G6Context _context = new ProjectPRN211_HuongNT7_G6Context();
-        public void OnGet()
+        public IActionResult OnGet()
         {
-        }
-        public IActionResult CheckOut()
-        {
-
             int accountId = GetId();
             if (HttpContext.Session.GetString("listId") == null)
             {
@@ -86,8 +82,9 @@ namespace OnlineMedicine.Pages.Carts
             HttpContext.Session.Remove("customerName");
             HttpContext.Session.Remove("customerAddress");
             HttpContext.Session.Remove("customerPhoneNumber");
-            return RedirectToPage("/Carts/CheckOut");
+            return Page();
         }
+        
         public int GetId()
         {
             var userJson = HttpContext.Session.GetString("User");

@@ -17,10 +17,9 @@ namespace OnlineMedicine.Pages.Carts
         private PayPal.Api.Payment payment;
 
 
-        public IActionResult OnGet(string name = null, string address = null, string phoneNumber = null)
+        public IActionResult OnGet()
         {
-            if (name == null || address == null || phoneNumber == null)
-            {
+            
                 int accountId = GetId();
                 Models.Account acc = _context.Accounts.FirstOrDefault(x => x.Id == accountId);
                 User = acc;
@@ -40,17 +39,10 @@ namespace OnlineMedicine.Pages.Carts
                 Carts = carts;
 
                 return Page();
-            }
-            else
-            {
-                HttpContext.Session.SetString("customerName", name);
-                HttpContext.Session.SetString("customerAddress", address);
-                HttpContext.Session.SetString("customerPhoneNumber", phoneNumber);
-                return RedirectToAction("PaymentWithPayPal");
-            }
+            
+            
         }
-
-        public ActionResult PaymentWithPaypal(string Cancel = null)
+        public ActionResult OnGetPaymentWithPaypal(string Cancel = null)
         {
             //getting the apiContext  
             APIContext apiContext = PaypalConfiguration.GetAPIContext();
@@ -65,7 +57,7 @@ namespace OnlineMedicine.Pages.Carts
                     //it is returned by the create function call of the payment class  
                     // Creating a payment  
                     // baseURL is the url on which paypal sendsback the data.  
-                    string baseURI = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}/Cart/PaymentWithPayPal?";
+                    string baseURI = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}/Carts/PaymentWithPayPal?";
                     //here we are generating guid for storing the paymentID received in session  
                     //which will be used in the payment execution  
                     var guid = Convert.ToString((new Random()).Next(100000));
@@ -105,7 +97,72 @@ namespace OnlineMedicine.Pages.Carts
                 return RedirectToAction("FailureView");
             }
             //on successful payment, show success page to user.  
-            return RedirectToAction("CheckOut");
+            return RedirectToPage("/Carts/CheckOut");
+        }
+        public ActionResult OnPostPaymentWithPaypal(string Cancel = null, string name = null, string address = null, string phoneNumber = null)
+        {
+            if (name == null || address == null || phoneNumber == null)
+            {
+                return Page();
+            }
+                HttpContext.Session.SetString("customerName", name);
+                HttpContext.Session.SetString("customerAddress", address);
+                HttpContext.Session.SetString("customerPhoneNumber", phoneNumber);
+            
+            //getting the apiContext  
+            APIContext apiContext = PaypalConfiguration.GetAPIContext();
+            try
+            {
+                //A resource representing a Payer that funds a payment Payment Method as paypal  
+                //Payer Id will be returned when payment proceeds or click to pay  
+                string payerId = Request.Query["PayerID"].ToString();
+                if (string.IsNullOrEmpty(payerId))
+                {
+                    //this section will be executed first because PayerID doesn't exist  
+                    //it is returned by the create function call of the payment class  
+                    // Creating a payment  
+                    // baseURL is the url on which paypal sendsback the data.  
+                    string baseURI = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}/Carts/CheckOutInfo?handler=PaymentWithPayPal&";
+                    //here we are generating guid for storing the paymentID received in session  
+                    //which will be used in the payment execution  
+                    var guid = Convert.ToString((new Random()).Next(100000));
+                    //CreatePayment function gives us the payment approval url  
+                    //on which payer is redirected for paypal account payment  
+                    var createdPayment = this.CreatePayment(apiContext, baseURI + "guid=" + guid);
+                    //get links returned from paypal in response to Create function call  
+                    var links = createdPayment.links.GetEnumerator();
+                    string paypalRedirectUrl = null;
+                    while (links.MoveNext())
+                    {
+                        Links lnk = links.Current;
+                        if (lnk.rel.ToLower().Trim().Equals("approval_url"))
+                        {
+                            //saving the payapalredirect URL to which user will be redirected for payment  
+                            paypalRedirectUrl = lnk.href;
+                        }
+                    }
+                    // saving the paymentID in the key guid
+                    HttpContext.Session.SetString(guid, createdPayment.id);
+                    return Redirect(paypalRedirectUrl);
+                }
+                else
+                {
+                    // This function exectues after receving all parameters for the payment  
+                    var guid = Request.Query["guid"].ToString();
+                    var executedPayment = ExecutePayment(apiContext, payerId, HttpContext.Session.GetString(guid) as string);
+                    //If executed payment failed then we will show payment failure message to user  
+                    if (executedPayment.state.ToLower() != "approved")
+                    {
+                        return RedirectToAction("FailureView");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("FailureView");
+            }
+            //on successful payment, show success page to user.  
+            return RedirectToPage("/Carts/CheckOut");
         }
         private Payment ExecutePayment(APIContext apiContext, string payerId, string paymentId)
         {

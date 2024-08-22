@@ -48,7 +48,7 @@ namespace OnlineMedicine.Pages.Carts
             _context.SaveChanges();
 
 
-            return Page();
+            return RedirectToPage("/Carts/Details");
         }
 
         public IActionResult OnGetDeleteOneItemInCart(int id)
@@ -58,8 +58,7 @@ namespace OnlineMedicine.Pages.Carts
             _context.Carts.Remove(c);
             _context.SaveChanges();
 
-            return Page();
-
+            return RedirectToPage("/Carts/Details");
         }
         public IActionResult OnPostPaypalPayment(string listId = null)
         {

@@ -26,7 +26,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Medicine" asp-action="Index">Medicines List</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Medicines/Index">Medicines List</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -48,7 +48,7 @@
                                 <a class="nav-link text-dark" asp-page="/Medicine/ListAll">Manage Medicine</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-page="/Order/ListOrderByAdmin">View Orders</a>
+                                <a class="nav-link text-dark" asp-page="/Orders/">View Orders</a>
                             </li>
                             }
                             @if (user.RoleId == 2)
@@ -59,7 +59,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-page="/Order/Index">Order</a>
+                                <a class="nav-link text-dark" asp-page="/Orders/Index">Order</a>
                             </li>
                             }
                             

@@ -101,11 +101,11 @@
                                     <td class="text-right font-weight-semibold align-middle p-4">$@decimal.Round(c.Medicine.Price, 2)</td>
                                     <td class="align-middle p-4">
                                         <form asp-page-handler="UpdateQuantity" method="get" id="form-child">
-                                            <input type="hidden" value="@c.Medicine.Price" name="unitPrice">
-                                            <input type="hidden" value="@c.MedicineId" name="mediId">
+                                            <input type="hidden" value="@c.Medicine.Price" name="unitPrice" />
+                                            <input type="hidden" value="@c.MedicineId" name="mediId" />
                                             <input type="number" class="form-control text-center quantityInput"
                                                    value="@c.Quantity" min="1" max="@c.Medicine.Quantity" name="quantity"
-                                                   oninput="checkValue(this)" data-unit-price="@c.Medicine.Price">
+                                                   oninput="checkValue(this)" data-unit-price="@c.Medicine.Price" />
                                         </form>
                                     </td>
                                     <td class="text-right font-weight-semibold align-middle p-4">$@decimal.Round(c.Price,2)</td>
@@ -146,7 +146,7 @@
                     <input type="hidden" id="checkboxValues" name="listId" value="">
                     <button onclick="prepareCheckboxValues()" type="submit" class="btn btn-lg btn-primary mt-2" id="getSelectedValues">Checkout</button>
                 </form>
-                <a asp-page ="/Medicines/"  class="btn btn-lg btn-default md-btn-flat mt-2 mr-3">Back to shopping</a>
+                <a asp-page ="/Medicines/Index"  class="btn btn-lg btn-default md-btn-flat mt-2 mr-3">Back to shopping</a>
             </div>
 
         </div>
@@ -164,7 +164,10 @@
     quantityInputs.forEach(function (input, index) {
         input.addEventListener('input', function () {
             checkValue(input);
-            myForms[index].submit();
+            var form = input.closest('form');
+            if (form) {
+                form.submit(); // Submit form chính xác
+            }
         });
     });
 
